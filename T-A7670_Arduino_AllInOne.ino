@@ -255,3 +255,46 @@ float get_GSM_Temp(){
   return temp;
 }
 
+void HTTPSGetRequest(const String url) {
+  modem.https_begin(); // Initialize HTTPS
+
+  int retry = 3;
+  while (retry--) {
+    Serial.println("Request URL : " + url);
+
+    // Set GET URT
+    if (!modem.https_set_url(url)) {
+      Serial.print("Failed to request : "); Serial.println(url);
+      // Debug
+      // modem.sendAT("+CSSLCFG=\"enableSNI\",0,1");
+      // modem.waitResponse();
+      delay(3000);
+      continue;
+    }
+
+    // Send GET request
+    int httpCode = 0;
+    httpCode = modem.https_get();
+    if (httpCode != 200) {
+      Serial.print("HTTP get failed ! error code = ");
+      Serial.println(httpCode);
+      delay(3000);
+      continue;
+    }
+
+    // Get HTTPS header information
+    String header = modem.https_header();
+    Serial.print("HTTP Header : ");
+    Serial.println(header);
+    delay(1000);
+
+    // Get HTTPS response
+    String body = modem.https_body();
+    Serial.print("HTTP body : ");
+    Serial.println(body);
+    delay(3000);
+    break;
+  }
+  Serial.println("-------------------------------------");
+}
+
