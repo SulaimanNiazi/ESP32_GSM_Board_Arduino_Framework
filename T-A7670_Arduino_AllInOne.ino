@@ -249,3 +249,9 @@ void get_GSM_location(){
   Serial.println("GSM Based Location String: " + location);
 }
 
+float get_GSM_Temp(){
+  float temp = modem.getTemperature();
+  Serial.printf("Chip temperature: %d°C\n", int(temp));
+  return temp;
+}
+
