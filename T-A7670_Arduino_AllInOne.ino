@@ -300,6 +300,14 @@ void HTTPSGetRequest(const String url) {
 
 // Experimental Functions Begin
 
+void printBalanceAndNumber(){
+  String ussd_balance = modem.sendUSSD("*111#");
+  Serial.print("Balance (USSD): "); Serial.println(ussd_balance);
+
+  String ussd_phone_num = modem.sendUSSD("*161#");
+  Serial.println("Phone number (USSD): " ); Serial.println( ussd_phone_num);
+}
+
 void get_GPS_location(){
   Serial.println("Enabling GPS/GNSS/GLONASS and waiting for GPS to be enabled...");
   modem.enableGPS();
