@@ -156,6 +156,8 @@ void setup() {
 }
 
 void loop() {
+  HTTPSGetRequest("https://gist.githubusercontent.com/RuiSantosdotme/7db8537cef1c84277c268c76a58d07ff/raw/d3fe4cd6eff1ed43e6dbd1883ab7eba8414e2406/gistfile1.txt");
+
   // Debug AT
   if (SerialAT.available()) {
     Serial.write(SerialAT.read());
@@ -195,7 +197,7 @@ void get_GPRS_details(){
   Serial.printf("Signal quality: %d\n", csq);
 }
 
-void call(const String number){
+void call(const String number){ // "+CCXXXXXXXXXX"
   Serial.print("Calling: "); Serial.println(number);
 
   // This is NOT supported on M590
@@ -218,7 +220,7 @@ void call(const String number){
   }
 }
 
-void sendSMS(const String number){
+void sendSMS(const String number){ // "+CCXXXXXXXXXX"
   bool res = modem.sendSMS(number, String("Hello from ") + modem.getIMEI());
   Serial.print("SMS: "); Serial.println(res ? "OK" : "fail");
 }
