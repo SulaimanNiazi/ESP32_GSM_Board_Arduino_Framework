@@ -38,9 +38,56 @@ TinyGsm modem(SerialAT);
 void setup() {
   Serial.begin(115200);
 
-  Serial.println("Init...");
   SerialAT.begin(115200, SERIAL_8N1, MODEM_RX_PIN, MODEM_TX_PIN);
 
+  pinMode(BOARD_POWERON_PIN, OUTPUT);
+  digitalWrite(BOARD_POWERON_PIN, HIGH);
+
+  // Set modem reset pin, reset modem
+  pinMode(MODEM_RESET_PIN, OUTPUT);
+  digitalWrite(MODEM_RESET_PIN, !MODEM_RESET_LEVEL); delay(100);
+  digitalWrite(MODEM_RESET_PIN, MODEM_RESET_LEVEL); delay(2600);
+  digitalWrite(MODEM_RESET_PIN, !MODEM_RESET_LEVEL);
+
+  pinMode(BOARD_PWRKEY_PIN, OUTPUT);
+  digitalWrite(BOARD_PWRKEY_PIN, LOW);
+  delay(100);
+  digitalWrite(BOARD_PWRKEY_PIN, HIGH);
+  delay(100);
+  digitalWrite(BOARD_PWRKEY_PIN, LOW);
+
+  // Check if the modem is online
+  Serial.print("Starting modem...");
+
+  int retry = 0;
+  while (!modem.testAT(1000)) {
+    Serial.print(".");
+    if (retry++ > 10) {
+      digitalWrite(BOARD_PWRKEY_PIN, LOW);
+      delay(100);
+      digitalWrite(BOARD_PWRKEY_PIN, HIGH);
+      retry = 0;
+    }
+  }
+  Serial.println();
+
+  // Check if SIM card is online
+  SimStatus sim = SIM_ERROR;
+  while (sim != SIM_READY) {
+    sim = modem.getSimStatus();
+    switch (sim) {
+      case SIM_READY:
+        Serial.println("SIM card online");
+        break;
+      case SIM_LOCKED:
+        Serial.println("The SIM card is locked. Please unlock the SIM card first.");
+        modem.simUnlock(SIM_PIN);
+        break;
+      default:
+        break;
+    }
+    delay(1000);
+  }
 }
 
 void loop() {
