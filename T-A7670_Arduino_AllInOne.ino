@@ -217,3 +217,8 @@ void call(const String number){
     Serial.print("Hang up: "); Serial.println(res? "OK" : "fail");
   }
 }
+
+void sendSMS(const String number){
+  bool res = modem.sendSMS(number, String("Hello from ") + modem.getIMEI());
+  Serial.print("SMS: "); Serial.println(res ? "OK" : "fail");
+}
