@@ -44,7 +44,6 @@
 
 void setup() {
   Serial.begin(115200);
-
   SerialAT.begin(115200, SERIAL_8N1, MODEM_RX_PIN, MODEM_TX_PIN);
 
   pinMode(BOARD_POWERON_PIN, OUTPUT);
@@ -138,6 +137,23 @@ void setup() {
         break;
     }
   }
+  Serial.println();
+
+  Serial.printf("Registration Status: %d\n", status);
+  delay(1000);
+
+  String ueInfo;
+  if (modem.getSystemInformation(ueInfo)) {
+    Serial.println("Inquiring UE system information: " + ueInfo);
+  }
+
+  if (!modem.setNetworkActive()) {
+    Serial.println("Enable network failed!");
+  }
+  delay(5000);
+
+  String ipAddress = modem.getLocalIP();
+  Serial.println("Network IP: " + ipAddress);
 }
 
 void loop() {
