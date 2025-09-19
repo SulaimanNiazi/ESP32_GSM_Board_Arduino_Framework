@@ -44,6 +44,7 @@
 
 void setup() {
   Serial.begin(115200);
+
   SerialAT.begin(115200, SERIAL_8N1, MODEM_RX_PIN, MODEM_TX_PIN);
 
   pinMode(BOARD_POWERON_PIN, OUTPUT);
@@ -76,13 +77,12 @@ void setup() {
   }
   Serial.println();
 
-  // Check if SIM card is online
   SimStatus sim = SIM_ERROR;
   while (sim != SIM_READY) {
     sim = modem.getSimStatus();
     switch (sim) {
       case SIM_READY:
-        Serial.println("SIM card online");
+        Serial.println("SIM card is online.");
         break;
       case SIM_LOCKED:
         Serial.println("The SIM card is locked. Unlocking the SIM card using the pin...");
@@ -95,7 +95,7 @@ void setup() {
   }
 
   if (!modem.setNetworkMode(MODEM_NETWORK_AUTO)) {
-    Serial.println("Set network mode failed!");
+    Serial.println("Failed to set network mode!");
   }
   String mode = modem.getNetworkModeString();
   Serial.print("Current network mode: ");
@@ -105,20 +105,19 @@ void setup() {
   Serial.printf("Set network apn: %s\n", NETWORK_APN);
   modem.sendAT(GF("+CGDCONT=1,\"IP\",\""), NETWORK_APN, "\"");
   if (modem.waitResponse() != 1) {
-    Serial.println("Set network apn error !");
+    Serial.println("Errorin setting network apn!");
   }
 #endif
 
   // Check network registration status and network signal status
-  int16_t sq ;
-  Serial.print("Wait for the modem to register with the network.");
+  Serial.print("Waiting for the modem to register with the network...");
   RegStatus status = REG_NO_RESULT;
   while (status == REG_NO_RESULT || status == REG_SEARCHING || status == REG_UNREGISTERED) {
     status = modem.getRegistrationStatus();
     switch (status) {
       case REG_UNREGISTERED:
       case REG_SEARCHING:
-        sq = modem.getSignalQuality();
+        int16_t sq = modem.getSignalQuality();
         Serial.printf("[%lu] Signal Quality: %d\n", millis() / 1000, sq);
         delay(1000);
         break;
@@ -165,5 +164,34 @@ void loop() {
     SerialAT.write(Serial.read());
   }
   delay(1);
+}
+
+void get_GPRS_details(){
+  Serial.print("Connecting to ");Serial.println(NETWORK_APN);
+  if (!modem.gprsConnect(NETWORK_APN, "", "")) {
+    delay(10000);
+    return;
+  }
+
+  bool res = modem.isGprsConnected();
+  Serial.print("GPRS status: "); Serial.println( res ? "connected" : "not connected");
+
+  String ccid = modem.getSimCCID();
+  Serial.println("CCID: " + ccid);
+
+  String imei = modem.getIMEI();
+  Serial.println("IMEI: " + imei);
+
+  String imsi = modem.getIMSI();
+  Serial.println("IMSI: " + imsi);
+
+  String cop = modem.getOperator();
+  Serial.println("Operator: " + cop);
+
+  IPAddress local = modem.localIP();
+  Serial.print("Local IP: "); Serial.println(local);
+
+  int csq = modem.getSignalQuality();
+  Serial.printf("Signal quality: %d\n", csq);
 }
 
