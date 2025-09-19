@@ -109,6 +109,35 @@ void setup() {
     Serial.println("Set network apn error !");
   }
 #endif
+
+  // Check network registration status and network signal status
+  int16_t sq ;
+  Serial.print("Wait for the modem to register with the network.");
+  RegStatus status = REG_NO_RESULT;
+  while (status == REG_NO_RESULT || status == REG_SEARCHING || status == REG_UNREGISTERED) {
+    status = modem.getRegistrationStatus();
+    switch (status) {
+      case REG_UNREGISTERED:
+      case REG_SEARCHING:
+        sq = modem.getSignalQuality();
+        Serial.printf("[%lu] Signal Quality: %d\n", millis() / 1000, sq);
+        delay(1000);
+        break;
+      case REG_DENIED:
+        Serial.println("Network registration was rejected, please check if the APN is correct");
+        return ;
+      case REG_OK_HOME:
+        Serial.println("Online registration successful");
+        break;
+      case REG_OK_ROAMING:
+        Serial.println("Network registration successful, currently in roaming mode");
+        break;
+      default:
+        Serial.printf("Registration Status: %d\n", status);
+        delay(1000);
+        break;
+    }
+  }
 }
 
 void loop() {
