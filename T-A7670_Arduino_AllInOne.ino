@@ -33,11 +33,24 @@
   #error "The correct library was NOT found. You must install TinyGSM-fork by lewisxhe - https://github.com/lewisxhe/TinyGSM-fork"
 #endif
 
+TinyGsm modem(SerialAT);
+
 void setup() {
+  Serial.begin(115200);
+
+  Serial.println("Init...");
+  SerialAT.begin(115200, SERIAL_8N1, MODEM_RX_PIN, MODEM_TX_PIN);
 
 }
 
 void loop() {
-
+  // Debug AT
+  if (SerialAT.available()) {
+    Serial.write(SerialAT.read());
+  }
+  if (Serial.available()) {
+    SerialAT.write(Serial.read());
+  }
+  delay(1);
 }
 
