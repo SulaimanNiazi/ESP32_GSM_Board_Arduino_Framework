@@ -33,7 +33,14 @@
   #error "The correct library was NOT found. You must install TinyGSM-fork by lewisxhe - https://github.com/lewisxhe/TinyGSM-fork"
 #endif
 
-TinyGsm modem(SerialAT);
+// #define DUMP_AT_COMMANDS // See all AT commands, if wanted
+#ifdef DUMP_AT_COMMANDS  // if enabled it requires the StreamDebugger lib
+  #include <StreamDebugger.h>
+  StreamDebugger debugger(SerialAT, Serial);
+  TinyGsm modem(debugger);
+#else
+  TinyGsm modem(SerialAT);
+#endif
 
 void setup() {
   Serial.begin(115200);
@@ -80,7 +87,7 @@ void setup() {
         Serial.println("SIM card online");
         break;
       case SIM_LOCKED:
-        Serial.println("The SIM card is locked. Please unlock the SIM card first.");
+        Serial.println("The SIM card is locked. Unlocking the SIM card...");
         modem.simUnlock(SIM_PIN);
         break;
       default:
