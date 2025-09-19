@@ -298,3 +298,33 @@ void HTTPSGetRequest(const String url) {
   Serial.println("-------------------------------------");
 }
 
+// Experimental Functions Begin
+
+void get_GPS_location(){
+  Serial.println("Enabling GPS/GNSS/GLONASS and waiting for GPS to be enabled...");
+  modem.enableGPS();
+  while(!modem.isEnableGPS());
+  Serial.println("GPS enabled.");
+  uint8_t status = 0;
+  float lat2 = 0, lon2 = 0, speed2 = 0, alt2 = 0, accuracy2 = 0;
+  int vsat2 = 0, usat2 = 0, year2 = 0, month2 = 0, day2 = 0, hour2 = 0, min2 = 0, sec2 = 0;
+  for (int8_t i = 15; i; i--) {
+    Serial.println("Requesting current GPS/GNSS/GLONASS location");
+    if (modem.getGPS(&status, &lat2, &lon2, &speed2, &alt2, &vsat2, &usat2, &accuracy2,
+                     &year2, &month2, &day2, &hour2, &min2, &sec2)) {
+      Serial.printf("Status: %s\nLatitude: %.8f\nLongitude: %.8f\nSpeed: %f\nAltitude: %f\nVisible Satellites: %d\nUsed Satellites: %d\nAccuracy: %f\nYear: %d\nMonth: %d\nDay: %d\nHour: %d\nMinute: %d\nSecond: %d\n", 
+                    (status == 0) ? "No Fix" : ((status == 1) ? "2D Fix" : "3D Fix"), lat2, lon2, speed2, alt2, vsat2, usat2, accuracy2, year2, month2, day2, hour2, min2, sec2);
+      break;
+    } else {
+      Serial.println("Couldn't get GPS/GNSS/GLONASS location, retrying in 15s.");
+      delay(15000L);
+    }
+  }
+  Serial.println("Retrieving GPS/GNSS/GLONASS location again as a string");
+  String gps_raw = modem.getGPSraw();
+  Serial.println("GPS/GNSS Based Location String: " + gps_raw);
+  Serial.println("Disabling GPS");
+  modem.disableGPS();
+}
+
+// Experimental Functions End
