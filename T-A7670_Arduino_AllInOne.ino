@@ -29,6 +29,9 @@
 #endif
 
 #include <TinyGsmClient.h>
+#ifndef TINY_GSM_FORK_LIBRARY
+  #error "The correct library was NOT found. You must install TinyGSM-fork by lewisxhe - https://github.com/lewisxhe/TinyGSM-fork"
+#endif
 
 void setup() {
 
