@@ -63,7 +63,6 @@ void setup() {
   delay(100);
   digitalWrite(BOARD_PWRKEY_PIN, LOW);
 
-  // Check if the modem is online
   Serial.print("Starting modem...");
 
   int retry = 0;
@@ -87,7 +86,7 @@ void setup() {
         Serial.println("SIM card online");
         break;
       case SIM_LOCKED:
-        Serial.println("The SIM card is locked. Unlocking the SIM card...");
+        Serial.println("The SIM card is locked. Unlocking the SIM card with the pin...");
         modem.simUnlock(SIM_PIN);
         break;
       default:
@@ -95,6 +94,14 @@ void setup() {
     }
     delay(1000);
   }
+
+  if (!modem.setNetworkMode(MODEM_NETWORK_AUTO)) {
+    Serial.println("Set network mode failed!");
+  }
+  String mode = modem.getNetworkModeString();
+  Serial.print("Current network mode: ");
+  Serial.println(mode);
+
 }
 
 void loop() {
