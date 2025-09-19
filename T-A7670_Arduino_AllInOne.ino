@@ -195,3 +195,25 @@ void get_GPRS_details(){
   Serial.printf("Signal quality: %d\n", csq);
 }
 
+void call(const String number){
+  Serial.print("Calling: "); Serial.println(number);
+
+  // This is NOT supported on M590
+  bool res = modem.callNumber(number);
+  Serial.print("Call: "); Serial.println(res ? "OK" : "fail");
+
+  if (res) {
+    delay(1000L);
+
+    // Play DTMF A, duration 1000ms
+    modem.dtmfSend('A', 1000);
+
+    // Play DTMF 0..4, default duration (100ms)
+    for (char tone = '0'; tone <= '4'; tone++) { modem.dtmfSend(tone); }
+
+    delay(5000);
+
+    res = modem.callHangup();
+    Serial.print("Hang up: "); Serial.println(res? "OK" : "fail");
+  }
+}
