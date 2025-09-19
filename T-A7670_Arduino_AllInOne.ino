@@ -222,3 +222,30 @@ void sendSMS(const String number){
   bool res = modem.sendSMS(number, String("Hello from ") + modem.getIMEI());
   Serial.print("SMS: "); Serial.println(res ? "OK" : "fail");
 }
+
+void get_GSM_location(){
+  float lat      = 0;
+  float lon      = 0;
+  float accuracy = 0;
+  int   year     = 0;
+  int   month    = 0;
+  int   day      = 0;
+  int   hour     = 0;
+  int   min      = 0;
+  int   sec      = 0;
+  for (int8_t i = 15; i; i--) {
+    Serial.println("Requesting current GSM location");
+    if (modem.getGsmLocation(&lat, &lon, &accuracy, &year, &month, &day, &hour, &min, &sec)) {
+      Serial.printf("Latitude: %.8f\nLongitude: %.8f\nAccuracy: %f\nYear: %d\nMonth: %d\nDay: %d\nHour: %d\nMinute: %d\nSecond: %d\n", 
+        lat, lon, accuracy, year, month, day, hour, min, sec);
+      break;
+    } else {
+      Serial.println("Couldn't get GSM location, retrying in 15s.");
+      delay(15000L);
+    }
+  }
+  Serial.println("Retrieving GSM location again as a string");
+  String location = modem.getGsmLocation();
+  Serial.println("GSM Based Location String: " + location);
+}
+
