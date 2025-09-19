@@ -86,7 +86,7 @@ void setup() {
         Serial.println("SIM card online");
         break;
       case SIM_LOCKED:
-        Serial.println("The SIM card is locked. Unlocking the SIM card with the pin...");
+        Serial.println("The SIM card is locked. Unlocking the SIM card using the pin...");
         modem.simUnlock(SIM_PIN);
         break;
       default:
@@ -102,6 +102,13 @@ void setup() {
   Serial.print("Current network mode: ");
   Serial.println(mode);
 
+#ifdef NETWORK_APN
+  Serial.printf("Set network apn: %s\n", NETWORK_APN);
+  modem.sendAT(GF("+CGDCONT=1,\"IP\",\""), NETWORK_APN, "\"");
+  if (modem.waitResponse() != 1) {
+    Serial.println("Set network apn error !");
+  }
+#endif
 }
 
 void loop() {
