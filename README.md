@@ -76,8 +76,7 @@ Edit the top of the code to set your network and SIM info:
 ```cpp
 #define SIM_PIN ""                   // Your SIM PIN (if any)
 #define NETWORK_APN "jazzconnect.mobilinkworld.com" // APN of your operator
-#define CALL_TARGET "+923145372506"  // Phone number to call
-#define SMS_TARGET "+923145372506"   // Phone number to send SMS
+
 ```
 
 > Replace `NETWORK_APN` with your operator's APN.
