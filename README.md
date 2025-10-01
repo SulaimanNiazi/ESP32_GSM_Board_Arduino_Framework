@@ -1,6 +1,6 @@
-# ESP32 LilyGO board GSM/GPRS/GPS Example
+# ESP32 GSM Board Arduino Framework
 
-This project demonstrates how to use the **LilyGO T-A7670** (SIMCOM A7670-based) board with an ESP32 to access GSM/GPRS, make calls, send SMS, fetch USSD info, and obtain GPS/GNSS locations. It uses the **TinyGSM-fork library by lewisxhe**. It maybe used on other TinyGsm boards but results are not guaranteed.
+This project demonstrates how to use the **LilyGO T-A7670** (SIMCOM A7670-based) board to access GSM/GPRS, make calls, send SMS, fetch USSD info, and obtain GPS/GNSS locations. It uses the **TinyGSM-fork library by lewisxhe**. It maybe used on other TinyGsm boards but results are not guaranteed.
 
 ---
 
@@ -50,10 +50,9 @@ Optional:
 * Arduino IDE (>=1.8.19 recommended)
 * **TinyGSM-fork library by lewisxhe** (not vshymanskyy/TinyGSM)
   * [GitHub Repo](https://github.com/lewisxhe/TinyGSM-fork)
-* Arduino JSON (optional, for parsing JSON responses)
-* StreamDebugger library (optional, for debugging AT commands)
+* StreamDebugger library (optional, for debugging AT commands, downloadable from Arduino IDE)
 
-> **Important:** Remove any existing `vshymanskyy/TinyGSM` library to prevent conflicts.
+> **Important:** Remove `vshymanskyy/TinyGSM` library, if downloaded, to prevent conflicts.
 
 ---
 
@@ -63,9 +62,9 @@ Optional:
 
    * Board manager URL: `https://dl.espressif.com/dl/package_esp32_index.json`
 2. Install **TinyGSM-fork** from GitHub (lewisxhe version).
-3. Clone this project or copy the `main.ino` file into a new Arduino sketch.
+3. Clone this project or copy the [ESP32_GSM_Board_Arduino_Code\ESP32_GSM_Board_Arduino_Code.ino](ESP32_GSM_Board_Arduino_Code\ESP32_GSM_Board_Arduino_Code.ino) file into a new Arduino sketch.
 4. Connect the board to your PC and select the correct **COM port**.
-5. Set the correct **board** in Arduino IDE: `LilyGO T-A7670`.
+5. Set the correct **board** in Arduino IDE: `LilyGO T-Display` or `ESP32 Dev Module`.
 
 ---
 
